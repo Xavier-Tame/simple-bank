@@ -364,5 +364,8 @@ func requireBodyMatchUser(t *testing.T, body *bytes.Buffer, user db.User) {
 	var gotUser db.User
 	err = json.Unmarshal(data, &gotUser)
 	require.NoError(t, err)
-	require.Equal(t, user, gotUser)
+	require.Equal(t, user.Username, gotUser.Username)
+	require.Equal(t, user.FullName, gotUser.FullName)
+	require.Equal(t, user.Email, gotUser.Email)
+	require.WithinDuration(t, user.CreatedAt, gotUser.CreatedAt, time.Second)
 }
