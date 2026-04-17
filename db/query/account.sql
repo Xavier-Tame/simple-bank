@@ -46,13 +46,14 @@ SELECT
 FROM
   accounts
 WHERE
-  closed_at IS NULL
+  owner = $1
+  AND closed_at IS NULL
 ORDER BY
   id
 LIMIT
-  $1
+  $2
 OFFSET
-  $2;
+  $3;
 
 -- name: UpdateAccount :one
 UPDATE accounts
