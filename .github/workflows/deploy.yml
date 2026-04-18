@@ -37,6 +37,11 @@ jobs:
             type=ref,event=branch
             type=semver,pattern={{version}}
 
+      - name: Generate app.env from Doppler
+        run: doppler secrets download --no-file --format env > app.env
+        env:
+          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN_PROD }}
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:

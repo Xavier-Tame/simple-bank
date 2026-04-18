@@ -38,6 +38,11 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      - name: Generate app.env from Doppler
+        run: doppler secrets download --no-file --format env > app.env
+        env:
+          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN_TEST }}
+
       - name: Test
         uses: actions/setup-go@v5
         with:
