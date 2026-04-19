@@ -41,7 +41,7 @@ jobs:
         uses: dopplerhq/cli-action@v3
 
       - name: Generate app.env from Doppler
-        run: doppler secrets download --no-file --format env > app.env
+        run: doppler secrets download --no-file --format env-no-quotes > app.env
         env:
           DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN_PROD }}
 
