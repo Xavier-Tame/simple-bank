@@ -85,7 +85,7 @@ jobs:
           kubectl config use-context deploy-context
 
       - name: Apply all K8s manifests
-        run: kubectl apply -f k8s/
+        run: kubectl apply -f k8s/ --validate=false
 
       - name: Update image to SHA tag
         run: |

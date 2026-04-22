@@ -18,7 +18,12 @@ rules:
   - apiGroups: [""]
     resources: ["services", "configmaps", "secrets", "pods"]
     verbs: ["get", "list", "create", "update", "patch"]
-
+  - apiGroups: ["networking.k8s.io"]
+    resources: ["ingresses", "ingressclasses"]
+    verbs: ["get", "list", "create", "update", "patch"]
+  - apiGroups: ["cert-manager.io"]
+    resources: ["clusterissuers"]
+    verbs: ["get", "list", "create", "update", "patch"]
 ---
 # Bind the Role to the Service Account
 apiVersion: rbac.authorization.k8s.io/v1
