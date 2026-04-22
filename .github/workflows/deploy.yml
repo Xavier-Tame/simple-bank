@@ -78,9 +78,8 @@ jobs:
             --token="${{ secrets.KUBE_TOKEN }}"
 
           kubectl config set-context deploy-context \
-            --cluster=my-cluster \
+            --cluster=simple-bank \
             --user=github-actions-deployer \
-            --namespace=default
 
           kubectl config use-context deploy-context
 
