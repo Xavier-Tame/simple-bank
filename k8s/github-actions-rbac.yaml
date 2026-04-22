@@ -1,0 +1,35 @@
+# Service Account
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: github-actions-deployer
+
+---
+# Role - scoped only to what's needed
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: github-actions-deployer-role
+  namespace: default
+rules:
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["get", "list", "update", "patch", "create"]
+  - apiGroups: [""]
+    resources: ["services", "configmaps", "secrets", "pods"]
+    verbs: ["get", "list", "create", "update", "patch"]
+
+---
+# Bind the Role to the Service Account
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: github-actions-deployer-binding
+  namespace: default
+subjects:
+  - kind: ServiceAccount
+    name: github-actions-deployer
+roleRef:
+  kind: Role
+  apiGroup: rbac.authorization.k8s.io
+  name: github-actions-deployer-role

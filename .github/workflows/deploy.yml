@@ -15,6 +15,9 @@ jobs:
     permissions:
       contents: read
       packages: write
+    outputs:
+      tags: ${{ steps.meta.outputs.tags }}
+      labels: ${{ steps.meta.outputs.labels }}
 
     steps:
       - name: Checkout code
@@ -33,9 +36,8 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{env.IMAGE_NAME }}
           tags: |
-            type=sha,prefix=sha-
-            type=ref,event=branch
-            type=semver,pattern={{version}}
+            type=sha,format=long
+            type=raw,value=latest
 
       - name: Install Doppler CLI
         uses: dopplerhq/cli-action@v3
@@ -53,3 +55,45 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build-and-push
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v5
+
+      - name: Configure kubeconfig
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBE_CA_CERT }}" | base64 --decode > /tmp/ca.crt
+          kubectl config set-cluster my-cluster \
+            --server="${{ secrets.KUBE_SERVER }}" \
+            --certificate-authority=/tmp/ca.crt
+
+          kubectl config set-credentials github-actions-deployer \
+            --token="${{ secrets.KUBE_TOKEN }}"
+
+          kubectl config set-context deploy-context \
+            --cluster=my-cluster \
+            --user=github-actions-deployer \
+            --namespace=default
+
+          kubectl config use-context deploy-context
+
+      - name: Apply all K8s manifests
+        run: kubectl apply -f k8s/
+
+      - name: Update image to SHA tag
+        run: |
+          kubectl set image deployment/simple-bank-api \
+            simple-bank-api=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:sha-${{ github.sha }}
+
+      - name: Force image pull (rollout restart)
+        run: kubectl rollout restart deployment/simple-bank-api
+
+      - name: Wait for rollout to complete
+        run: kubectl rollout status deployment/simple-bank-api --timeout=120s

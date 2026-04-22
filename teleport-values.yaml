@@ -1,0 +1,4 @@
+clusterName: teleport.xaviertame.com
+acme: true
+acmeEmail: xavs.tame@gmail.com
+kubeClusterName: simple-bank
