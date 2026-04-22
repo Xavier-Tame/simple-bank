@@ -70,7 +70,7 @@ jobs:
         run: |
           mkdir -p $HOME/.kube
           echo "${{ secrets.KUBE_CA_CERT }}" | base64 --decode > /tmp/ca.crt
-          kubectl config set-cluster my-cluster \
+          kubectl config set-cluster simple_bank \
             --server="${{ secrets.KUBE_SERVER }}" \
             --certificate-authority=/tmp/ca.crt
 
@@ -78,7 +78,7 @@ jobs:
             --token="${{ secrets.KUBE_TOKEN }}"
 
           kubectl config set-context deploy-context \
-            --cluster=simple-bank \
+            --cluster=simple_bank \
             --user=github-actions-deployer \
 
           kubectl config use-context deploy-context
