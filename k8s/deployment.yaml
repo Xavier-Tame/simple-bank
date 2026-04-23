@@ -5,7 +5,11 @@ metadata:
   labels:
     app: simple-bank-api
 spec:
-  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2 # allow 2 extra pods during update
+      maxUnavailable: 0 # never take a pod down before new one is ready
   selector:
     matchLabels:
       app: simple-bank-api
