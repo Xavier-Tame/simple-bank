@@ -72,17 +72,16 @@ jobs:
       - name: Apply all K8s manifests
         run: kubectl apply -f k8s/
 
-      - name: Update image to SHA tag
+      - name: Update image to latest tag
         run: |
           kubectl set image deployment/simple-bank-api \
-            simple-bank-api=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:sha-${{ github.sha }}
+            simple-bank-api=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
 
       - name: Force image pull (rollout restart)
         run: kubectl rollout restart deployment/simple-bank-api
 
       - name: Watch rollout progress
         run: |
-          kubectl get pods -w &
           kubectl rollout status deployment/simple-bank-api
 
       - name: Wait for rollout to complete

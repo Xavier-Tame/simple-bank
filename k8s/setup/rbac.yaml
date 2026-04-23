@@ -47,6 +47,10 @@ rules:
     resources: ["secrets"]
     verbs: ["get", "list", "create", "update", "patch"]
 
+  - apiGroups: ["autoscaling"]
+    resources: ["horizontalpodautoscalers"]
+    verbs: ["get", "list", "create", "update", "patch"]
+
   # NOTE: RBAC resources (roles, rolebindings, clusterroles, etc.)
   # are intentionally EXCLUDED — this role cannot read or modify RBAC.
 ---
