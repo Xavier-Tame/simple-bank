@@ -7,7 +7,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ fromJSON(toJSON(github.repository)) }}
+  IMAGE_NAME: xavier-tame/simple-bank
 
 jobs:
   build-and-push:
