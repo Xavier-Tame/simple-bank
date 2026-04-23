@@ -78,3 +78,17 @@ subjects:
   - kind: ServiceAccount
     name: github-cli
     namespace: default
+---
+# ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: github-cli-cluster-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: github-cli-cluster-role
+subjects:
+  - kind: ServiceAccount
+    name: github-cli
+    namespace: default
