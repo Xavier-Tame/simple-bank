@@ -50,6 +50,20 @@ rules:
   # NOTE: RBAC resources (roles, rolebindings, clusterroles, etc.)
   # are intentionally EXCLUDED — this role cannot read or modify RBAC.
 ---
+# ClusterRole - only for the cluster-scoped resources
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: github-cli-cluster-role
+rules:
+  - apiGroups: ["networking.k8s.io"]
+    resources: ["ingressclasses"]
+    verbs: ["get", "list"]
+
+  - apiGroups: ["cert-manager.io"]
+    resources: ["clusterissuers"]
+    verbs: ["get", "list", "create", "update", "patch"]
+---
 # RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
