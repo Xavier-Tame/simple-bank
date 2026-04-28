@@ -194,8 +194,8 @@ func TestCreateUser(t *testing.T) {
 
 type mockTokenMaker struct{}
 
-func (m *mockTokenMaker) CreateToken(username string, duration time.Duration) (string, error) {
-	return "", fmt.Errorf("forced token error")
+func (m *mockTokenMaker) CreateToken(username string, duration time.Duration) (string, *token.Payload, error) {
+	return "", &token.Payload{}, fmt.Errorf("forced token error")
 }
 
 func (m *mockTokenMaker) VerifyToken(token string) (*token.Payload, error) {
@@ -225,6 +225,8 @@ func TestLoginUser(t *testing.T) {
 			buildstubs: func(store *mockdb.MockStore) {
 				store.EXPECT().
 					GetUser(gomock.Any(), gomock.Eq(user.Username)).Times(1).Return(user, nil)
+				store.EXPECT().
+					CreateSession(gomock.Any(), gomock.Any()).Times(1)
 			},
 			checkResponse: func(t *testing.T, recorder *httptest.ResponseRecorder) {
 				require.Equal(t, http.StatusOK, recorder.Code)
